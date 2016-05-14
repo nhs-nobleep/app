@@ -13,11 +13,43 @@ import {
   ListView,
   Navigator,
   TouchableHighlight,
+  TouchableOpacity,
 } from 'react-native';
+
+var NavBar = require("./navbar.js");
 
 var MOCKED_JOBS_DATA = [
   { title: 'First job', patientId: 'Amar', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
 ];
+
+var NavigationBarRouteMapper = {
+  Title(route, navigator, index, navState) {
+    return (
+      <View style={navstyles.navBarTitleContainer}>
+        <Text style={[navstyles.navBarText, navstyles.navBarTitleText]}>
+          {route.title}
+        </Text>
+      </View>
+    );
+  },
+  LeftButton(route, navigator, index, navState) {
+    if (index === 0) {
+      return null;
+    }
+
+    // var previousRoute = navState.routeStack[index - 1];
+    return (
+      <TouchableOpacity
+        onPress={() => navigator.pop()}
+        style={navstyles.navBarLeftButton}>
+        <Text style={navstyles.navBarText}>Back</Text>
+      </TouchableOpacity>
+    );
+  },
+  RightButton(route, navigator, index, navState) {
+    return null;
+  }
+};
 
 
 class BanishTheBleep extends Component {
@@ -28,8 +60,12 @@ class BanishTheBleep extends Component {
         style={{ flex:1 }}
         initialRoute={{
           name: "Your jobs",
+          title: "Your jobs",
         }}
         renderScene={ this.renderScene }
+        navigationBar={ <Navigator.NavigationBar
+    style={navstyles.navBar}
+    routeMapper={NavigationBarRouteMapper} /> }
       />
     );
   }
@@ -123,12 +159,15 @@ class JobsView extends Component {
       }
 
       return (
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this.renderJob.bind(this)}
-          renderSectionHeader={this.renderSectionHeader}
-          style={styles.listView}
-        />
+        
+          <ListView
+            dataSource={this.state.dataSource}
+            renderRow={this.renderJob.bind(this)}
+            renderSectionHeader={this.renderSectionHeader}
+            style={styles.listView}
+          />
+        
+        
       )
     }
     
@@ -166,6 +205,7 @@ class JobsView extends Component {
     doNavigate(job){
       this.props.navigator.push({
         name: "View job",
+        title: "Job details",
         passProps: {
           job: job
         }
@@ -196,7 +236,15 @@ var styles = StyleSheet.create({
     backgroundColor: '#F5FCFF',
   },
   viewJobContainer: {
-    flex: 1
+    // flexDirection: 'row',
+    flex: 1,
+  },
+  nav: {
+    flex: 1,
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginBottom: 20,
+    backgroundColor: '#FF0000'
   },
   rightContainer: {
     flex: 1
@@ -214,7 +262,8 @@ var styles = StyleSheet.create({
     textAlign: 'center',
   },
   listView: {
-    paddingTop: 20,
+    flex: 1,
+    paddingTop: 44,
     backgroundColor: '#F5FCFF',
   },
   sectionHeader: {
@@ -227,5 +276,40 @@ var styles = StyleSheet.create({
     paddingLeft: 10
   },
 });
+
+
+
+var navstyles = StyleSheet.create({
+  navBar: {
+    backgroundColor: "#000",
+    height: 44
+  },
+  navBarText: {
+    color: '#FFF',
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginTop: 19
+  },
+  navBarTitleContainer: {
+    alignSelf: 'center',
+    paddingRight: 74
+  },
+  navBarTitleText: {
+    textAlign: 'center'
+  },
+  navBarLeftButton: {
+    paddingLeft: 10,
+    marginTop: 8
+  },
+  navBarRightButton: {
+    paddingRight: 10,
+  }
+});
+
+
+
+
+
+
 
 AppRegistry.registerComponent('BanishTheBleep', () => BanishTheBleep);
