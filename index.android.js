@@ -238,6 +238,7 @@ var styles = StyleSheet.create({
   viewJobContainer: {
     // flexDirection: 'row',
     flex: 1,
+    marginTop: 44
   },
   nav: {
     flex: 1,
@@ -299,7 +300,7 @@ var navstyles = StyleSheet.create({
   },
   navBarLeftButton: {
     paddingLeft: 10,
-    marginTop: 8
+    marginTop: 4
   },
   navBarRightButton: {
     paddingRight: 10,
