@@ -84,9 +84,9 @@ class JobsView extends Component {
       var data = {};
 
       var sections = {
-        1: "Urgent",
-        2: "Notso urgent",
-        3: "Not very urgent",
+        1: "High",
+        2: "Medium",
+        3: "Low",
       }
 
       sortedJobs.map((job) => {
