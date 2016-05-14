@@ -10,7 +10,9 @@ import {
   Text,
   View,
   Image,
-  ListView
+  ListView,
+  Navigator,
+  TouchableHighlight,
 } from 'react-native';
 
 var MOCKED_JOBS_DATA = [
@@ -22,11 +24,24 @@ class BanishTheBleep extends Component {
   render() {
     var job = MOCKED_JOBS_DATA[0];
     return (
-      <JobsView />
+      <Navigator
+        style={{ flex:1 }}
+        initialRoute={{
+          name: "Your jobs",
+        }}
+        renderScene={ this.renderScene }
+      />
     );
   }
 
-
+  renderScene(route, navigator) {
+     if(route.name == 'Your jobs') {
+       return <JobsView navigator={navigator} />
+     }
+     if(route.name == 'View job') {
+       return <ViewJobView navigator={navigator} {...route.passProps} />
+     }
+  }
 
 }
 
@@ -110,7 +125,7 @@ class JobsView extends Component {
       return (
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={this.renderJob}
+          renderRow={this.renderJob.bind(this)}
           renderSectionHeader={this.renderSectionHeader}
           style={styles.listView}
         />
@@ -136,15 +151,39 @@ class JobsView extends Component {
 
     renderJob(job) {
       return (
-        <View key={job.key} style={styles.container}>
-          <Image source={{uri: job.posters.thumbnail}} style={styles.thumbnail} />
-          <View style={styles.rightContainer}>
-            <Text style={styles.title}>{job.title}</Text>
-            <Text style={styles.patientName}>{job.patientId}</Text>
+        <TouchableHighlight onPress={ () => this.doNavigate(job) } >
+          <View key={job.key} style={styles.container}>
+            <Image source={{uri: job.posters.thumbnail}} style={styles.thumbnail} />
+            <View style={styles.rightContainer}>
+              <Text style={styles.title}>{job.title}</Text>
+              <Text style={styles.patientName}>{job.patientId}</Text>
+            </View>
           </View>
-        </View>
+        </TouchableHighlight>
       );
     }
+
+    doNavigate(job){
+      this.props.navigator.push({
+        name: "View job",
+        passProps: {
+          job: job
+        }
+      });
+    }
+}
+
+class ViewJobView extends Component {
+  render(){
+    return (
+      <View style={styles.viewJobContainer}>
+        <Text>Job Details</Text>
+        <Text>Title: {this.props.job.title}</Text>
+        <Text>Patient: {this.props.job.patient}</Text>
+        <Text>Priority: {this.props.job.urgency}</Text>
+      </View>
+    );
+  }
 }
 
 
@@ -155,6 +194,9 @@ var styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
+  },
+  viewJobContainer: {
+    flex: 1
   },
   rightContainer: {
     flex: 1
