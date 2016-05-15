@@ -16,11 +16,15 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-var NavBar = require("./navbar.js");
-
 var MOCKED_JOBS_DATA = [
-  { title: 'First job', patientId: 'Amar', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
+  { title: 'First job', patientId: 'Amar', urgency: 3 },
 ];
+
+var sectionsMetadata = {
+  1: { label: "High", style: (s) => s.priorityHigh },
+  2: { label: "Medium", style: (s) => s.priorityMedium },
+  3: { label: "Low", style: (s) => s.priorityLow },
+}
 
 var NavigationBarRouteMapper = {
   Title(route, navigator, index, navState) {
@@ -88,7 +92,7 @@ class JobsView extends Component {
       this.state = {
         dataSource: new ListView.DataSource({
           rowHasChanged: (row1, row2) => row1 !== row2,
-          sectionHeaderHasChanged: (r1, r2) => r1 !== r2,
+          sectionHeaderHasChanged: (r1, r2) => r1 != r2
         }),
         loaded: false
       };
@@ -107,14 +111,16 @@ class JobsView extends Component {
       //   })
       //   .done();
       var MOCKED_JOBS_DATA = [
-        { title: 'First job', patientId: 'Amar', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Second job', patientId: 'Sam', urgency: 1, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Third job', patientId: 'Alice', urgency: 2, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Fourth job', patientId: 'Sebastiano', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Fifth job', patientId: 'Dave', urgency: 1, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Sizth job', patientId: 'John', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Seventh job', patientId: 'Tim', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
-        { title: 'Eighth job', patientId: 'Mark', urgency: 3, posters: {thumbnail: 'http://i.imgur.com/UePbdph.jpg'} },
+        { title: 'First job', patientId: 'Amar', urgency: 3 },
+        { title: 'Second job', patientId: 'Sam', urgency: 1 },
+        { title: 'Third job', patientId: 'Alice', urgency: 2 },
+        { title: 'Fourth job', patientId: 'Sebastiano', urgency: 3 },
+        { title: 'Fifth job', patientId: 'Dave', urgency: 1 },
+        { title: 'Sizth job', patientId: 'John', urgency: 3 },
+        { title: 'Seventh job', patientId: 'Tim', urgency: 3 },
+        { title: 'Eighth job', patientId: 'Mark', urgency: 3 },
+        { title: 'Ninth job', patientId: 'Mark', urgency: 2 },
+        { title: 'Tenth job', patientId: 'Mark', urgency: 1 },
       ];
       setTimeout(() => {
 
@@ -134,14 +140,8 @@ class JobsView extends Component {
       var sectionIds = [];
       var data = {};
 
-      var sections = {
-        1: "High",
-        2: "Medium",
-        3: "Low",
-      }
-
       sortedJobs.map((job) => {
-        var section = sections[job.urgency];
+        var section = job.urgency;
         if (sectionIds.indexOf(section) === -1) {
           sectionIds.push(section);
           data[section] = []
@@ -172,10 +172,13 @@ class JobsView extends Component {
     }
     
     renderSectionHeader(data, sectionId) {
-      var text;
+      var metaData = sectionsMetadata[sectionId];
+      var style = metaData.style(styles);
       return (
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionHeaderText}>{sectionId}</Text>
+        <View style={style}>
+          <View style={styles.sectionHeaderInner}>
+            <Text style={styles.sectionHeaderText}>{metaData.label}</Text>
+          </View>
         </View>
       );
     }
@@ -192,7 +195,6 @@ class JobsView extends Component {
       return (
         <TouchableHighlight onPress={ () => this.doNavigate(job) } >
           <View key={job.key} style={styles.container}>
-            <Image source={{uri: job.posters.thumbnail}} style={styles.thumbnail} />
             <View style={styles.rightContainer}>
               <Text style={styles.title}>{job.title}</Text>
               <Text style={styles.patientName}>{job.patientId}</Text>
@@ -264,17 +266,34 @@ var styles = StyleSheet.create({
   },
   listView: {
     flex: 1,
-    paddingTop: 44,
+    marginTop: 44,
+    paddingBottom: 44,
     backgroundColor: '#F5FCFF',
   },
-  sectionHeader: {
-    backgroundColor: '#48D1CC'
+
+  priorityHigh: {
+    backgroundColor: '#F35B04'
   },
+
+  priorityMedium: {
+    backgroundColor: '#F18701'
+  },
+
+  priorityLow: {
+    backgroundColor: '#F7B801'
+  },
+
   sectionHeaderText: {
     fontFamily: 'AvenirNext-Medium',
     fontSize: 16,
-    color: 'white',
-    paddingLeft: 10
+    color: 'white'
+  },
+
+  sectionHeaderInner: {
+    flex: 1,
+    paddingTop: 5,
+    paddingLeft: 5,
+    paddingBottom: 5
   },
 });
 
@@ -282,7 +301,7 @@ var styles = StyleSheet.create({
 
 var navstyles = StyleSheet.create({
   navBar: {
-    backgroundColor: "#000",
+    backgroundColor: "#c9e4e3",
     height: 44
   },
   navBarText: {
