@@ -221,17 +221,30 @@ class JobsView extends Component {
       ); 
     }
 
-    renderJob(job) {
+    renderJob(job, sectionId, rowId) {
+      var rowColours = [ "#F0F0F0", "#fff" ];
+      var rowStyle = [
+        styles.rightContainer,
+        {
+          'backgroundColor': rowColours[rowId % rowColours.length],
+          paddingTop: 10,
+          paddingBottom: 10,
+        }
+      ];
+
       var timeDistance = timeago.time_ago_in_words(job.timestamp);
-      var jobDescription = job.creator_comment.substring(0, 30) + "...";
+      var jobDescription = job.creator_comment.substring(0, 40) + "...";
       var patientLocation = job.ward + "." + job.bed;
       return (
         <TouchableHighlight onPress={ () => this.doNavigate(job) } >
           <View key={job.key} style={styles.container}>
-            <View style={styles.rightContainer}>
+            <View style={rowStyle}>
               <Text style={styles.title}>{jobDescription}</Text>
-              <Text style={styles.patientName}>{patientLocation}</Text>
-              <Text style={styles.patientName}>{timeDistance}</Text>
+              <View style={styles.jobRowBottom}>
+                <Text style={styles.patientLocation}>{patientLocation}</Text>
+                <Text style={styles.patientName}>{job.patient_id}</Text>
+                <Text style={styles.jobRelativeTime}>{timeDistance}</Text>
+              </View>
             </View>
           </View>
         </TouchableHighlight>
@@ -262,13 +275,10 @@ class ViewJobView extends Component {
   }
 }
 
-
 var styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   viewJobContainer: {
@@ -284,19 +294,34 @@ var styles = StyleSheet.create({
     backgroundColor: '#FF0000'
   },
   rightContainer: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'flex-start',
+    paddingLeft: 4
+  },
+  jobRowBottom: {
+    flex: 1,
+    flexDirection: "row"
+  },
+  patientLocation: {
+    fontWeight: 'bold'
+  },
+  jobRelativeTime: {
+    flex: 1,
+    textAlign: "right",
+    marginRight: 4
   },
   thumbnail: {
     width: 53,
     height: 81,
   },
   title: {
-    fontSize: 20,
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 16,
+    marginBottom: 2,
+    textAlign: 'left',
   }, 
   patientName: {
-    textAlign: 'center',
+    textAlign: 'left',
+    marginLeft: 6
   },
   listView: {
     flex: 1,
