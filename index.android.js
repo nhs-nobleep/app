@@ -16,6 +16,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
+var timeago = require("./timeago");
+
 var MOCKED_JOBS_DATA = [
   { title: 'First job', patientId: 'Amar', urgency: 3 },
 ];
@@ -110,17 +112,18 @@ class JobsView extends Component {
       //     });
       //   })
       //   .done();
+      var seedDate = new Date();
       var MOCKED_JOBS_DATA = [
-        { title: 'First job', patientId: 'Amar', urgency: 3 },
-        { title: 'Second job', patientId: 'Sam', urgency: 1 },
-        { title: 'Third job', patientId: 'Alice', urgency: 2 },
-        { title: 'Fourth job', patientId: 'Sebastiano', urgency: 3 },
-        { title: 'Fifth job', patientId: 'Dave', urgency: 1 },
-        { title: 'Sizth job', patientId: 'John', urgency: 3 },
-        { title: 'Seventh job', patientId: 'Tim', urgency: 3 },
-        { title: 'Eighth job', patientId: 'Mark', urgency: 3 },
-        { title: 'Ninth job', patientId: 'Mark', urgency: 2 },
-        { title: 'Tenth job', patientId: 'Mark', urgency: 1 },
+        { title: 'First job', patientId: 'Amar', urgency: 3, timestamp: seedDate - 30000 },
+        { title: 'Second job', patientId: 'Sam', urgency: 1, timestamp: seedDate - 35000 },
+        { title: 'Third job', patientId: 'Alice', urgency: 2, timestamp: seedDate - 400000 },
+        { title: 'Fourth job', patientId: 'Sebastiano', urgency: 3, timestamp: seedDate - 450000 },
+        { title: 'Fifth job', patientId: 'Dave', urgency: 1, timestamp: seedDate - 50000 },
+        { title: 'Sizth job', patientId: 'John', urgency: 3, timestamp: seedDate - 550000 },
+        { title: 'Seventh job', patientId: 'Tim', urgency: 3, timestamp: seedDate - 600000 },
+        { title: 'Eighth job', patientId: 'Mark', urgency: 3, timestamp: seedDate - 65000 },
+        { title: 'Ninth job', patientId: 'Mark', urgency: 2, timestamp: seedDate - 700000 },
+        { title: 'Tenth job', patientId: 'Mark', urgency: 1, timestamp: seedDate - 800000 },
       ];
       setTimeout(() => {
 
@@ -192,12 +195,14 @@ class JobsView extends Component {
     }
 
     renderJob(job) {
+      var timeDistance = timeago.time_ago_in_words(job.timestamp);
       return (
         <TouchableHighlight onPress={ () => this.doNavigate(job) } >
           <View key={job.key} style={styles.container}>
             <View style={styles.rightContainer}>
               <Text style={styles.title}>{job.title}</Text>
               <Text style={styles.patientName}>{job.patientId}</Text>
+              <Text style={styles.patientName}>{timeDistance}</Text>
             </View>
           </View>
         </TouchableHighlight>
