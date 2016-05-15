@@ -223,21 +223,30 @@ class JobsView extends Component {
 
     renderJob(job, sectionId, rowId) {
       var rowColours = [ "#F0F0F0", "#fff" ];
+      var rc = rowColours[rowId % rowColours.length]
       var rowStyle = [
         styles.rightContainer,
         {
-          'backgroundColor': rowColours[rowId % rowColours.length],
+          'backgroundColor': rc,
           paddingTop: 10,
           paddingBottom: 10,
         }
       ];
+
+      var ackStyle = {};
+      if (rowId % 2 == 0){
+        ackStyle['backgroundColor'] = "#000";
+      }
 
       var timeDistance = timeago.time_ago_in_words(job.timestamp);
       var jobDescription = job.creator_comment.substring(0, 40) + "...";
       var patientLocation = job.ward + "." + job.bed;
       return (
         <TouchableHighlight onPress={ () => this.doNavigate(job) } >
-          <View key={job.key} style={styles.container}>
+          <View key={job.key} style={[styles.container, { backgroundColor: rc }]}>
+
+            <View style={[styles.acknowledgement, ackStyle]} />
+
             <View style={rowStyle}>
               <Text style={styles.title}>{jobDescription}</Text>
               <View style={styles.jobRowBottom}>
@@ -285,6 +294,16 @@ var styles = StyleSheet.create({
     // flexDirection: 'row',
     flex: 1,
     marginTop: 44
+  },
+  acknowledgement: {
+    width: 20,
+    height: 20,
+    borderRadius: 100/2,
+    //backgroundColor: 'red',
+    borderColor: 'black',
+    borderWidth: 2,
+    marginTop: 20,
+    marginLeft: 4
   },
   nav: {
     flex: 1,
