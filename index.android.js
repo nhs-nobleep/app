@@ -143,13 +143,19 @@ class JobsView extends Component {
       var sectionIds = [];
       var data = {};
 
-      sortedJobs.map((job) => {
+      sortedJobs.forEach((job) => {
         var section = job.urgency;
         if (sectionIds.indexOf(section) === -1) {
           sectionIds.push(section);
           data[section] = []
         }
         data[section].push(job);
+      });
+
+      sectionIds.forEach((section) => {
+        var sectionJobs = data[section];
+        sectionJobs.sort((a, b) => a.timestamp - b.timestamp);
+        data[section] = sectionJobs;
       });
 
       //TODO: Sort by time as well!
