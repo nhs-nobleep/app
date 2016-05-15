@@ -311,7 +311,7 @@ class ViewJobView extends Component {
         </View>
 
         <View style={[styles.jobDetailRow, { justifyContent: 'center', marginTop: 15, marginBottom: 15 }]}>
-          <TouchableHighlight onPress={this._onPressButton.bind(this, job.id)}>
+          <TouchableHighlight onPress={this._onAcknowledge.bind(this, job.id)}>
             <View style={styles.fakeButton}>
                 <Text style={styles.fakeButtonText}>Acknowledge</Text>
             </View>
@@ -321,9 +321,11 @@ class ViewJobView extends Component {
             <Text style={styles.fakeButtonText}>Reassign</Text>
           </View>
 
-          <View style={styles.fakeButton}>
-            <Text style={styles.fakeButtonText}>Done</Text>
-          </View>
+          <TouchableHighlight onPress={this._onDone.bind(this, job.id)}>
+            <View style={styles.fakeButton}>
+              <Text style={styles.fakeButtonText}>Done</Text>
+            </View>
+          </TouchableHighlight>
         </View>
 
         <View style={[styles.jobDetailRow, { flexDirection: 'column', justifyContent: 'center', marginTop: 15, marginBottom: 15 }]}>
@@ -343,12 +345,18 @@ class ViewJobView extends Component {
     );
   }
 
-  _onPressButton(id){
-
-    var params = {
+  _onAcknowledge(id){
+    this._doPost(id, {
         acknowledged: true
-    };
+    });
+  }
+  _onDone(id){
+    this._doPost(id, {
+        done: true
+    });
+  }
 
+  _doPost(id, params){
     var formData = new FormData();
 
     for (var k in params) {
