@@ -104,58 +104,69 @@ class JobsView extends Component {
 
     componentDidMount() {
       this.fetchData();
+      this.theTimer = setInterval(() => this.fetchData(), 1000);
+    }
+
+    componentWillUnmount(){
+      clearInterval(this.theTimer);
     }
 
     fetchData() {
-      // fetch("http://blah/jobs/{doctorId}")
-      //   .then((responseData) => {
-      //     this.setState({
-      //       jobs: responseData.jobs,
-      //     });
-      //   })
-      //   .done();
-      var seedDate = new Date();
-      var MOCKED_JOBS_DATA = [
-        { creator_comment: 'First job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Amar', urgency: 3
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:44:44 GMT" },
-        { creator_comment: 'Second job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Sam', urgency: 1
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 08:44:44 GMT" },
-        { creator_comment: 'Third job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Alice', urgency: 2
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:35:44 GMT"  },
-        { creator_comment: 'Fourth job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Sebastiano', urgency: 3
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:31:44 GMT"  },
-        { creator_comment: 'Fifth job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Dave', urgency: 1
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:28:44 GMT" },
-        { creator_comment: 'Sizth job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'John', urgency: 3
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:32:44 GMT"  },
-        { creator_comment: 'Seventh job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Tim', urgency: 3
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:20:44 GMT"  },
-        { creator_comment: 'Eighth job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Mark', urgency: 3
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:13:44 GMT" },
-        { creator_comment: 'Ninth job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Mark', urgency: 2
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:02:44 GMT"  },
-        { creator_comment: 'Tenth job comment. There is some long text here which we will need to trim off', 
-              patient_id: 'Mark', urgency: 1
-              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 08:53:44 GMT"  },
-      ];
-      setTimeout(() => {
-
-        var { data, sectionIds } = this.splitDataIntoSections(MOCKED_JOBS_DATA);
-
-        this.setState({
-          dataSource: this.state.dataSource.cloneWithRowsAndSections(data),
-          loaded: true
+      fetch("https://powerful-dawn-95782.herokuapp.com/job/read")
+        .then((responseData) => responseData.json())
+        .then((responseData) => {
+          var jobs = responseData.jobs;
+          var { data, sectionIds } = this.splitDataIntoSections(jobs);
+          console.log(JSON.stringify(data));
+          this.setState({
+            dataSource: this.state.dataSource.cloneWithRowsAndSections(data),
+            loaded: true
+          });
+          
         })
-      }, 1000);
+        .done();
+      // var seedDate = new Date();
+      // var MOCKED_JOBS_DATA = [
+      //   { creator_comment: 'First job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Amar', urgency: 3
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:44:44 GMT" },
+      //   { creator_comment: 'Second job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Sam', urgency: 1
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 08:44:44 GMT" },
+      //   { creator_comment: 'Third job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Alice', urgency: 2
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:35:44 GMT"  },
+      //   { creator_comment: 'Fourth job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Sebastiano', urgency: 3
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:31:44 GMT"  },
+      //   { creator_comment: 'Fifth job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Dave', urgency: 1
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:28:44 GMT" },
+      //   { creator_comment: 'Sizth job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'John', urgency: 3
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:32:44 GMT"  },
+      //   { creator_comment: 'Seventh job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Tim', urgency: 3
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:20:44 GMT"  },
+      //   { creator_comment: 'Eighth job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Mark', urgency: 3
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:13:44 GMT" },
+      //   { creator_comment: 'Ninth job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Mark', urgency: 2
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:02:44 GMT"  },
+      //   { creator_comment: 'Tenth job comment. There is some long text here which we will need to trim off', 
+      //         patient_id: 'Mark', urgency: 1
+      //         , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 08:53:44 GMT"  },
+      // ];
+      // setTimeout(() => {
+
+      //   var { data, sectionIds } = this.splitDataIntoSections(MOCKED_JOBS_DATA);
+
+      //   this.setState({
+      //     dataSource: this.state.dataSource.cloneWithRowsAndSections(data),
+      //     loaded: true
+      //   })
+      // }, 1000);
 
     }
 
