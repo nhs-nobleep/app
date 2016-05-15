@@ -14,6 +14,8 @@ import {
   Navigator,
   TouchableHighlight,
   TouchableOpacity,
+  TouchableElement,
+  TextInput,
 } from 'react-native';
 
 var timeago = require("./timeago");
@@ -116,34 +118,34 @@ class JobsView extends Component {
       var MOCKED_JOBS_DATA = [
         { creator_comment: 'First job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Amar', urgency: 3
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:44:44 GMT" },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:44:44 GMT" },
         { creator_comment: 'Second job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Sam', urgency: 1
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 08:44:44 GMT" },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 08:44:44 GMT" },
         { creator_comment: 'Third job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Alice', urgency: 2
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:35:44 GMT"  },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:35:44 GMT"  },
         { creator_comment: 'Fourth job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Sebastiano', urgency: 3
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:31:44 GMT"  },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:31:44 GMT"  },
         { creator_comment: 'Fifth job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Dave', urgency: 1
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:28:44 GMT" },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:28:44 GMT" },
         { creator_comment: 'Sizth job comment. There is some long text here which we will need to trim off', 
               patient_id: 'John', urgency: 3
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:32:44 GMT"  },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:32:44 GMT"  },
         { creator_comment: 'Seventh job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Tim', urgency: 3
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:20:44 GMT"  },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:20:44 GMT"  },
         { creator_comment: 'Eighth job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Mark', urgency: 3
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:13:44 GMT" },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:13:44 GMT" },
         { creator_comment: 'Ninth job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Mark', urgency: 2
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 09:02:44 GMT"  },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 09:02:44 GMT"  },
         { creator_comment: 'Tenth job comment. There is some long text here which we will need to trim off', 
               patient_id: 'Mark', urgency: 1
-              , bed: "bed", ward: "ward", created_at: "Sun, 15 May 2016 08:53:44 GMT"  },
+              , bed: "bed", ward: "ward", creator_name: "nurse name", created_at: "Sun, 15 May 2016 08:53:44 GMT"  },
       ];
       setTimeout(() => {
 
@@ -273,27 +275,117 @@ class JobsView extends Component {
 
 class ViewJobView extends Component {
   render(){
+    var job = this.props.job;
+    var urgencyMeta = sectionsMetadata[job.urgency];
+    var urgencyStyle = urgencyMeta.style(styles);
     return (
       <View style={styles.viewJobContainer}>
-        <Text>Job Details</Text>
-        <Text>Title: {this.props.job.title}</Text>
-        <Text>Patient: {this.props.job.patient}</Text>
-        <Text>Priority: {this.props.job.urgency}</Text>
+        <View style={styles.jobDetailRow}>
+          <Text style={{fontWeight: 'bold'}}>{job.ward}.{job.bed}</Text>
+          <Text style={{ flex: 1, textAlign: 'right', fontWeight: 'bold' }}>{job.patient_id}</Text>
+        </View>
+
+        <View style={[styles.jobDetailRow, urgencyStyle, styles.urgencyRow]}>
+          <Text style={styles.jobDetailTitle}>Priority:</Text>
+          <Text>{urgencyMeta.label}</Text>
+        </View>
+
+        <View style={styles.jobDetailRow}>
+          <Text style={styles.jobDetailTitle}>By:</Text>
+          <Text>{job.creator_name} @ {job.created_at}</Text>
+        </View>
+
+        <View style={[styles.jobDetailRow, {flexDirection: 'column'}]}>
+          <Text style={styles.jobDetailTitle}>Job:</Text>
+          <Text>{job.creator_comment}</Text>
+        </View>
+
+        <View style={[styles.jobDetailRow, { justifyContent: 'center', marginTop: 15, marginBottom: 15 }]}>
+          <View style={styles.fakeButton}>
+            <Text style={styles.fakeButtonText}>Acknowledge</Text>
+          </View>
+
+          <View style={styles.fakeButton}>
+            <Text style={styles.fakeButtonText}>Reassign</Text>
+          </View>
+
+          <View style={styles.fakeButton}>
+            <Text style={styles.fakeButtonText}>Done</Text>
+          </View>
+        </View>
+
+        <View style={[styles.jobDetailRow, { flexDirection: 'column', justifyContent: 'center', marginTop: 15, marginBottom: 15 }]}>
+          <View style={{height: 80, borderColor: 'gray', borderWidth: 1, flex: 1 }}>
+            <TextInput
+              style={{height: 80, borderColor: 'gray', borderWidth: 1, flex: 1 }} multiline={true} />
+          </View>
+
+          <View style={[styles.replyButton]}>
+            <Text style={[styles.fakeButtonText]}>Reply</Text>
+          </View>
+
+        </View>
+
+
       </View>
     );
   }
 }
 
 var styles = StyleSheet.create({
+  fakeButton: {
+    backgroundColor: "#000",
+    marginBottom: 7,
+    padding: 10,
+    marginRight: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5
+  },
+  replyButton: {
+    backgroundColor: "#000",
+    marginTop: 10,
+    padding: 10,
+    marginLeft: 190,
+    width: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5
+  },
+  fakeButtonText: {
+    textAlign: 'center',
+    color: '#fff',
+  },
   container: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#F5FCFF',
+    //backgroundColor: '#F5FCFF',
+  },
+  jobDetailRow: {
+    // flex: 1,
+    flexDirection: 'row',
+    //backgroundColor: '#F5FCFF',
+    marginBottom: 10
+  },
+  jobDetailTitle: {
+    fontWeight: 'bold',
+    marginRight: 6
+  },
+  urgencyRow: {
+    justifyContent: 'center',
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginTop: 5,
+    marginBottom: 15,
+    borderRadius: 9
   },
   viewJobContainer: {
     // flexDirection: 'row',
     flex: 1,
-    marginTop: 44
+    marginTop: 44,
+    paddingLeft: 10,
+    paddingTop: 10,
+    paddingRight: 10,
   },
   acknowledgement: {
     width: 20,
