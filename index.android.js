@@ -68,7 +68,7 @@ class BanishTheBleep extends Component {
         style={{ flex:1 }}
         initialRoute={{
           name: "Your jobs",
-          title: "Your jobs",
+          title: "Gastro jobs",
         }}
         renderScene={ this.renderScene }
         navigationBar={ <Navigator.NavigationBar
@@ -513,7 +513,7 @@ var styles = StyleSheet.create({
 
 var navstyles = StyleSheet.create({
   navBar: {
-    backgroundColor: "#c9e4e3",
+    backgroundColor: "#708090",
     height: 44
   },
   navBarText: {
