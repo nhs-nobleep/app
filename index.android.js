@@ -117,7 +117,6 @@ class JobsView extends Component {
         .then((responseData) => {
           var jobs = responseData.jobs;
           var { data, sectionIds } = this.splitDataIntoSections(jobs);
-          console.log(JSON.stringify(data));
           this.setState({
             dataSource: this.state.dataSource.cloneWithRowsAndSections(data),
             loaded: true
@@ -247,7 +246,7 @@ class JobsView extends Component {
       ];
 
       var ackStyle = {};
-      if (rowId % 2 == 0){
+      if (job.acknowledged != undefined && job.acknowledged != null){
         ackStyle['backgroundColor'] = "#000";
       }
 
@@ -312,9 +311,11 @@ class ViewJobView extends Component {
         </View>
 
         <View style={[styles.jobDetailRow, { justifyContent: 'center', marginTop: 15, marginBottom: 15 }]}>
-          <View style={styles.fakeButton}>
-            <Text style={styles.fakeButtonText}>Acknowledge</Text>
-          </View>
+          <TouchableHighlight onPress={this._onPressButton.bind(this, job.id)}>
+            <View style={styles.fakeButton}>
+                <Text style={styles.fakeButtonText}>Acknowledge</Text>
+            </View>
+          </TouchableHighlight>
 
           <View style={styles.fakeButton}>
             <Text style={styles.fakeButtonText}>Reassign</Text>
@@ -340,6 +341,28 @@ class ViewJobView extends Component {
 
       </View>
     );
+  }
+
+  _onPressButton(id){
+
+    var params = {
+        acknowledged: true
+    };
+
+    var formData = new FormData();
+
+    for (var k in params) {
+        formData.append(k, params[k]);
+    }
+
+    var request = {
+        method: 'POST',
+        body: formData
+    };
+
+    var url = 'https://powerful-dawn-95782.herokuapp.com/job/update/' + id;
+    fetch(url, request).then(() => console.log("posted"));    
+
   }
 }
 
